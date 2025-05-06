@@ -1,95 +1,167 @@
 # DooMP
 
-A raycasting-based 3D game.
+DooMP is a raycasting-based 3D shooter game written in Python using Pygame.
 
-## Deployment Instructions
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [How to Play](#how-to-play)
+- [Building from Source](#building-from-source)
+  - [Cross-Platform Package](#cross-platform-package)
+  - [Building Windows Executable on macOS](#building-windows-executable-on-macos)
+  - [Building with GitHub Actions](#building-with-github-actions)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
-This repository includes a deployment script that allows you to build standalone executables for Windows, macOS, and Linux.
+## Features
 
-### Prerequisites
+- Raycasting-based 3D rendering
+- First-person shooter gameplay
+- Enemy AI with various behaviors
+- Weapons and projectile system
+- Health and scoring system
+- Minimap for navigation
 
-- Python 3.7 or later
-- pip (Python package installer)
+## Installation
 
-### Setup
+### Windows
+Download and run the latest `DooMP-x.x-win64.exe` from the releases page.
 
-1. Clone or download this repository
-2. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+### macOS
+Download and mount the `DooMP-x.x-macos.dmg` file, then drag the application to your Applications folder.
 
-### Building the Game
-
-To build the game, use the `deploy.py` script with the target platform as an argument:
+### Linux
+Download the `DooMP-x.x-linux.tar.gz` file, extract it, and run the executable:
 
 ```bash
-# Build for the current platform
-python deploy.py
+tar -xzf DooMP-x.x-linux.tar.gz
+chmod +x DooMP-x.x-linux
+./DooMP-x.x-linux
+```
 
-# Build for Windows
-python deploy.py windows
+### From Source
+If you have Python installed, you can run the game directly from source:
 
-# Build for macOS
+```bash
+# Clone or download the repository
+git clone https://github.com/your-username/DooMP.git
+cd DooMP
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the game
+python main.py
+```
+
+## How to Play
+
+### Controls
+- **WASD / Arrow Keys**: Move
+- **Mouse**: Look around
+- **Left Click**: Shoot
+- **R**: Reload when out of ammo
+- **ESC**: Exit game
+- **H / F1**: Show help overlay
+
+### Gameplay
+- Defeat enemies to score points
+- Avoid taking damage from enemies
+- Navigate the maze to find and eliminate all enemies
+
+## Building from Source
+
+### Cross-Platform Package
+
+To create a distributable package that works on any system with Python installed:
+
+```bash
+python build_package.py
+```
+
+This creates a ZIP file in the `dist` directory containing everything needed to run the game on any platform.
+
+### Building Windows Executable on macOS
+
+#### Using Docker
+
+1. Install Docker Desktop for macOS
+2. Run the build script:
+
+```bash
+./build_windows.sh
+```
+
+This will create a Windows executable (`DooMP-1.0-win64.exe`) in the `dist` directory.
+
+#### Using Wine
+
+1. Install Wine on macOS:
+
+```bash
+brew install --cask wine-stable
+```
+
+2. Run the Wine-based build script:
+
+```bash
+./build_windows_wine.sh
+```
+
+### Building macOS App
+
+To build a native macOS application:
+
+```bash
 python deploy.py macos
+```
 
-# Build for Linux
+This creates a `.app` bundle and `.dmg` file in the `dist` directory.
+
+### Building Linux Executable
+
+To build a Linux executable:
+
+```bash
 python deploy.py linux
-
-# Try to build for all platforms (may require additional setup)
-python deploy.py all
 ```
 
-The script will:
-1. Install PyInstaller if it's not already installed
-2. Clean up any previous build files
-3. Build the game for the specified platform
-4. Package all necessary resources
-5. Create distribution files in the `dist` directory
+This creates an executable and a `.tar.gz` archive in the `dist` directory.
 
-### Outputs
+### Building with GitHub Actions
 
-Depending on the platform, the script will create:
+This repository includes GitHub Actions workflows that automatically build game packages for all platforms.
 
-- **Windows**: An `.exe` file in the `dist` directory
-- **macOS**: An `.app` bundle and optionally a `.dmg` file in the `dist` directory
-- **Linux**: An executable file, a `.desktop` file, and a `.tar.gz` archive in the `dist` directory
+To use it:
+1. Push your code to GitHub
+2. Go to the Actions tab in your repository
+3. Run the "Build Game Packages" workflow manually or push to the main branch
 
-### Cross-Platform Building
+## Development
 
-The script attempts to build for platforms other than the one you're running on, but this may not work without additional setup. For reliable cross-platform builds, it's best to run the script on each target platform.
+### Requirements
+- Python 3.7+
+- Pygame 2.0+
+- NumPy
 
-### Adding Assets
+### Project Structure
+- `main.py`: Main game code
+- `deploy.py`: Deployment script for creating standalone executables
+- `build_package.py`: Script for creating cross-platform packages
+- `build_windows.sh` and `build_windows_wine.sh`: Scripts for building Windows executables on macOS
+- `.github/workflows/build.yml`: GitHub Actions workflow for automated builds
 
-If your game uses additional asset files (images, sounds, etc.), add them to the `ASSETS` list in the `deploy.py` script:
+## Contributing
 
-```python
-ASSETS = ["shot.wav", "icon.png", "other_asset.jpg"]
-```
+Contributions are welcome! Feel free to open issues or submit pull requests.
 
-### Adding an Icon
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-To add a custom icon to your game, specify the path to your icon file in the `deploy.py` script:
+## License
 
-```python
-ICON_FILE = "path/to/your/icon.ico"  # for Windows
-# or
-ICON_FILE = "path/to/your/icon.icns"  # for macOS
-```
-
-## Running the Game
-
-After building, you can run the game by:
-
-- **Windows**: Double-click the `.exe` file in the `dist` directory
-- **macOS**: Double-click the `.app` bundle in the `dist` directory
-- **Linux**: Run the executable file in the `dist` directory
-
-## Troubleshooting
-
-If you encounter any issues during the build process:
-
-1. Make sure you have the latest version of PyInstaller installed
-2. Check that all dependencies are correctly installed
-3. Look for error messages in the build output
-4. For platform-specific issues, consult the PyInstaller documentation
+Copyright © 2025 Martin Pfeffer. All rights reserved.

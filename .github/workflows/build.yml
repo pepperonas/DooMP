@@ -2,9 +2,9 @@ name: Build Game Packages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
     inputs:
       version:
@@ -16,10 +16,10 @@ jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           
@@ -34,7 +34,7 @@ jobs:
           pyinstaller --onefile --windowed --name DooMP-${{ github.event.inputs.version || '1.0' }}-win64 main.py
           
       - name: Upload Windows artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: DooMP-Windows
           path: dist/DooMP-${{ github.event.inputs.version || '1.0' }}-win64.exe
@@ -42,10 +42,10 @@ jobs:
   build-macos:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           
@@ -66,7 +66,7 @@ jobs:
         continue-on-error: true
           
       - name: Upload macOS artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: DooMP-macOS
           path: |
@@ -76,10 +76,10 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           
@@ -109,7 +109,7 @@ jobs:
           cd dist && tar -czf DooMP-${{ github.event.inputs.version || '1.0' }}-linux.tar.gz DooMP-${{ github.event.inputs.version || '1.0' }}-linux DooMP.desktop
           
       - name: Upload Linux artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: DooMP-Linux
           path: |
@@ -120,25 +120,25 @@ jobs:
     needs: [build-windows, build-macos, build-linux]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Create distribution directory
         run: mkdir -p dist
         
       - name: Download Windows artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: DooMP-Windows
           path: dist
           
       - name: Download macOS artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: DooMP-macOS
           path: dist
           
       - name: Download Linux artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: DooMP-Linux
           path: dist
@@ -148,7 +148,7 @@ jobs:
           cd dist && zip -r DooMP-${{ github.event.inputs.version || '1.0' }}-all-platforms.zip .
           
       - name: Upload combined artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: DooMP-All-Platforms
           path: dist/DooMP-${{ github.event.inputs.version || '1.0' }}-all-platforms.zip
