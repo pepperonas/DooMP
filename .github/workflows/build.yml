@@ -32,8 +32,8 @@ jobs:
       - name: Build Windows executable
         run: |
           # Clean up any previous build artifacts
-          if exist dist rmdir /s /q dist
-          if exist build rmdir /s /q build
+          if (Test-Path -Path "dist") { Remove-Item -Path "dist" -Recurse -Force }
+          if (Test-Path -Path "build") { Remove-Item -Path "build" -Recurse -Force }
           pyinstaller --onefile --windowed --name DooMP-${{ github.event.inputs.version || '1.0' }}-win64 main.py
           
       - name: Upload Windows artifact
