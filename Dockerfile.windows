@@ -1,0 +1,16 @@
+FROM python:3.10-windowsservercore
+
+WORKDIR /app
+
+# Copy the game files
+COPY main.py .
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir pyinstaller
+
+# Build the Windows executable
+RUN pyinstaller --onefile --windowed --name DooMP-1.0-win64 main.py
+
+# Output will be in /app/dist/DooMP-1.0-win64.exe

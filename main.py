@@ -1943,7 +1943,7 @@ def main():
     # Pygame initialisieren
     pg.init()
     screen = pg.display.set_mode((WIDTH, HEIGHT))
-    pg.display.set_caption("3D Shooter")
+    pg.display.set_caption("DooMP")
     clock = pg.time.Clock()
     font = pg.font.SysFont('Arial', 18)
     
@@ -2022,7 +2022,7 @@ def main():
             overlay.fill((0, 0, 0, 150))  # Schwarzer Hintergrund mit 150/255 Alpha
             screen.blit(overlay, (0, 0))
             
-            title_text = title_font.render("3D SHOOTER", True, RED)
+            title_text = title_font.render("DooMP", True, RED)
             screen.blit(title_text, (WIDTH//2 - title_text.get_width()//2, HEIGHT//5))
             
             subtitle = instr_font.render("Ein Raycasting-basiertes 3D-Spiel", True, (200, 200, 200))
