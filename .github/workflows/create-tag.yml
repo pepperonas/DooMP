@@ -1,0 +1,47 @@
+name: Auto Create Tag
+
+on:
+  push:
+    branches: [ main, master ]
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    # Only run this job if there isn't already a tag for this commit
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up tag info
+        id: tag
+        run: |
+          # Get latest tag or start at 1.0.0 if none exists
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
+          echo "Latest tag: $LATEST_TAG"
+          
+          # Extract version numbers
+          VERSION=${LATEST_TAG#v}
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+          
+          # Increment patch version
+          PATCH=$((PATCH + 1))
+          
+          # Create new tag
+          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+      
+      - name: Create tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a ${{ steps.tag.outputs.new_version }} -m "Auto-generated tag for version ${{ steps.tag.outputs.new_version }}"
+          git push origin ${{ steps.tag.outputs.new_version }}

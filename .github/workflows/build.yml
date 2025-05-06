@@ -31,6 +31,9 @@ jobs:
           
       - name: Build Windows executable
         run: |
+          # Clean up any previous build artifacts
+          if exist dist rmdir /s /q dist
+          if exist build rmdir /s /q build
           pyinstaller --onefile --windowed --name DooMP-${{ github.event.inputs.version || '1.0' }}-win64 main.py
           
       - name: Upload Windows artifact
@@ -57,7 +60,10 @@ jobs:
           
       - name: Build macOS app
         run: |
-          pyinstaller --windowed --name DooMP-${{ github.event.inputs.version || '1.0' }}-macos main.py
+          # Clean up any previous build artifacts first
+          rm -rf dist build
+          # Force overwrite with -y
+          pyinstaller --windowed --name DooMP-${{ github.event.inputs.version || '1.0' }}-macos main.py -y
           
       - name: Create DMG
         run: |
@@ -93,6 +99,8 @@ jobs:
           
       - name: Build Linux executable
         run: |
+          # Clean up any previous build artifacts
+          rm -rf dist build
           pyinstaller --onefile --name DooMP-${{ github.event.inputs.version || '1.0' }}-linux main.py
           
       - name: Create Linux desktop file
@@ -154,11 +162,15 @@ jobs:
           path: dist/DooMP-${{ github.event.inputs.version || '1.0' }}-all-platforms.zip
           
       - name: Create release
-        if: github.event_name == 'workflow_dispatch'
+        # Create releases for workflow_dispatch and for any push to main or master
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
         uses: softprops/action-gh-release@v1
         with:
           name: DooMP v${{ github.event.inputs.version || '1.0' }}
           tag_name: v${{ github.event.inputs.version || '1.0' }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
           files: |
             dist/DooMP-${{ github.event.inputs.version || '1.0' }}-win64.exe
             dist/DooMP-${{ github.event.inputs.version || '1.0' }}-macos.dmg
