@@ -5,12 +5,20 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  # Also run on tag creation
+  create:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       version:
         description: 'Version number for this release'
         required: true
         default: '1.0'
+
+# Required for creating releases
+permissions:
+  contents: write
 
 jobs:
   build-windows:
@@ -163,7 +171,7 @@ jobs:
           
       - name: Create release
         # Create releases for workflow_dispatch and for any push to main or master
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'create' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
         uses: softprops/action-gh-release@v1
         with:
           name: DooMP v${{ github.event.inputs.version || '1.0' }}
